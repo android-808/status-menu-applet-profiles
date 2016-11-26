@@ -28,6 +28,8 @@
 #include <profiled/libprofile.h>
 #include <profiled/keys_nokia.h>
 #include <libhildondesktop/libhildondesktop.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
 typedef struct _ProfilesStatusMenuItem        ProfilesStatusMenuItem;
 typedef struct _ProfilesStatusMenuItemClass   ProfilesStatusMenuItemClass;
@@ -162,28 +164,31 @@ profiles_status_menu_item_on_button_clicked (GtkWidget *widget G_GNUC_UNUSED, Pr
                                                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                                 dgettext ("hildon-libs", "wdgt_bd_done"),
                                                 GTK_RESPONSE_ACCEPT,
-                                                GTK_STOCK_CANCEL,
+                                                _("_Cancel"),
                                                 GTK_RESPONSE_REJECT,
                                                 NULL);
 
     if (!dialog)
         goto clean;
 
-    main_hbox = gtk_hbox_new (FALSE, 0);
+    main_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     if (!main_hbox)
         goto clean;
+    gtk_box_set_homogeneous (GTK_BOX (main_hbox), TRUE);
 
-    gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), main_hbox, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), main_hbox, TRUE, TRUE, 0);
 
-    profiles_vbox = gtk_vbox_new (FALSE, 0);
+    profiles_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     if (!profiles_vbox)
         goto clean;
+    gtk_box_set_homogeneous (GTK_BOX (profiles_vbox), TRUE);
 
     gtk_box_pack_start (GTK_BOX (main_hbox), profiles_vbox, TRUE, TRUE, HILDON_MARGIN_HALF);
 
-    vibration_vbox = gtk_vbox_new (FALSE, 0);
+    vibration_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     if (!vibration_vbox)
         goto clean;
+    gtk_box_set_homogeneous (GTK_BOX (vibration_vbox), TRUE);
 
     gtk_box_pack_start (GTK_BOX (main_hbox), vibration_vbox, TRUE, TRUE, HILDON_MARGIN_HALF);
 
@@ -220,7 +225,8 @@ profiles_status_menu_item_on_button_clicked (GtkWidget *widget G_GNUC_UNUSED, Pr
         g_object_set_data (G_OBJECT (button), "profile", *ptr);
         gtk_button_set_label (GTK_BUTTON (button), label);
         gtk_button_set_image (GTK_BUTTON (button), gtk_image_new_from_icon_name (icon, GTK_ICON_SIZE_DIALOG));
-        gtk_button_set_alignment (GTK_BUTTON (button), 0, 0.5);
+	gtk_widget_set_halign (GTK_WIDGET (button), GTK_ALIGN_START);
+	gtk_widget_set_valign (GTK_WIDGET (button), GTK_ALIGN_CENTER);
         gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), FALSE);
 
         if (strcmp (priv->current_profile_name, *ptr) == 0)
@@ -306,7 +312,8 @@ profiles_status_menu_item_init (ProfilesStatusMenuItem *plugin)
 
     hildon_button_set_style (HILDON_BUTTON (priv->button), HILDON_BUTTON_STYLE_PICKER);
     hildon_button_set_title (HILDON_BUTTON (priv->button), dgettext ("osso-profiles", "profi_ti_menu_plugin"));
-    gtk_button_set_alignment (GTK_BUTTON (priv->button), 0, 0);
+    gtk_widget_set_halign (GTK_WIDGET (priv->button), GTK_ALIGN_START);
+    gtk_widget_set_valign (GTK_WIDGET (priv->button), GTK_ALIGN_START);
     g_signal_connect_after (G_OBJECT (priv->button), "clicked", G_CALLBACK (profiles_status_menu_item_on_button_clicked), plugin);
 
     profiles_status_menu_item_update_profile (plugin);

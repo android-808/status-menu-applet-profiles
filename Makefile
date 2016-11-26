@@ -10,6 +10,6 @@ clean:
 	$(RM) profiles_status_menu_item.so
 
 profiles_status_menu_item.so: profiles_status_menu_item.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(shell pkg-config --cflags --libs hildon-1 profile profile-data libhildondesktop-1) -W -Wall -O2 -shared $^ -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(shell pkg-config --cflags --libs hildon-3 profile profile-data libhildondesktop-3) -fPIC -W -Wall -O2 -shared $^ -o $@
 
 .PHONY: all install clean
